@@ -3,6 +3,7 @@
 #include "StreamConductor.hpp"
 #include "Metronome.hpp"
 #include "CrosshairMetronome.hpp"
+#include "BeatmapWithVisualizer.hpp"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -15,6 +16,7 @@ Rectangle target_rect;
 
 Metronome metronome;
 CrosshairMetronome crosshair;
+BeatmapWithVisualizer beatmap;
 //
 
 void InitAudio(){
@@ -25,15 +27,18 @@ void initialize_demo(){
     // Music
     // char* path = "music/i wanna know.mp3";
     // char* path = "music/146bpm.wav";
-    char* path = "music/coral city.mp3";
+    char* path = "music/karateman.wav";
     // float bpm = 146;
-    float bpm = 100;
+    // float bpm = 100;
+    float bpm = 120;
     float ratio = 1;
     conductor = StreamConductor(path, bpm * ratio);
     SetMusicPitch(conductor.GetStream(), ratio);
 
     metronome = Metronome(conductor);
     crosshair = CrosshairMetronome(conductor);
+    beatmap = BeatmapWithVisualizer(conductor, "beatmaps/karate.bm");
+    
 }
 
 int main() {
@@ -63,14 +68,19 @@ int main() {
 
         // Update Objects
         metronome.Update();
+        beatmap.Update();
         crosshair.Update();
 
         if (IsKeyPressed(KEY_SPACE)) {
-            int result = crosshair.CheckInRange();
-            if (result == HIT_PERFECT)
+            int result = beatmap.CheckInRange();
+            if (result == HIT_PERFECT) {
                 crosshair.PlayPerfect();
-            else if (result == HIT_GOOD)
+            }
+
+            else if (result == HIT_GOOD) {
                 crosshair.PlayGood();
+            }
+
             else if (result == HIT_BAD){
                 crosshair.PlayBad();
             }
@@ -81,7 +91,7 @@ int main() {
         }
 
         BeginDrawing(); 
-        //DrawFPS(0,0);
+        // DrawFPS(0,0);
 
         // Draw background
         ClearBackground(BLUE);
@@ -89,6 +99,7 @@ int main() {
         // Draw Objects
         DrawRectangleRec(target_rect, BLACK);
         crosshair.Draw();
+        beatmap.Draw();
 
         EndDrawing();
     }

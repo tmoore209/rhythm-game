@@ -1,0 +1,24 @@
+# Ongoing question: Should this be in mm:ss domain or beat domain?
+
+# We're going to use hash for comments
+# And a header fenced off with triple backticks
+
+# Also, note that the bpm is only the starting bpm
+```
+title:
+bpm:
+composer:
+vocals:
+original:
+mapper:
+offset:
+```
+
+# Format: 
+# μs EVENT-NUMBER
+# 1s  = 1000 ms
+# 1ms = 1000 μs
+
+0: MICROSECOND NOTE_TYPE    (consumes 2)
+1: NEW_BPM                  (consumes 1)
+2: NEW_TIME_SIG             (consumes 1)

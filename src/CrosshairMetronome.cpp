@@ -21,7 +21,6 @@ CrosshairMetronome::CrosshairMetronome(StreamConductor c) {
 
 // Check for timeout and play missed SE
 void CrosshairMetronome::Update() {
-    
     float er = GetErrorRange();
     if (conductor.GetSongTimePosition() > lastbeat + er) {
         lastbeat += er;
