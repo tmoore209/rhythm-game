@@ -11,7 +11,7 @@ import datetime
 from sys import argv
 
 header = """
-```
+`
 title:
 bpm:
 composer:
@@ -19,7 +19,7 @@ vocals:
 original:
 mapper:
 offset:
-```
+`
 """.strip()
 
 if len(argv) > 1:
