@@ -1,44 +1,87 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "BeatmapWithVisualizer.hpp"
+#include <string.h>
 
 BeatmapWithVisualizer::BeatmapWithVisualizer() { }
 BeatmapWithVisualizer::~BeatmapWithVisualizer() { }
 
 
-BeatmapWithVisualizer::BeatmapWithVisualizer(StreamConductor conductor, char* path, float offset) {
+BeatmapWithVisualizer::BeatmapWithVisualizer(StreamConductor* conductor, char* path, float offset) {
     this->conductor = conductor;
 
     FILE* f = fopen(path, "r");
 
-    bool header_started = false;
-    bool header_ended = false;
-
-    // Ignore anything before the heaver
+    // Ignore anything before the header
     while (fgetc(f) != '`');
 
-    // Until the end of the heasver
-    while (!header_ended) {
-        char c = fgetc(f);
-        if (c == '`') {
-            header_ended = true;
-            continue;
-        }
-        // TODO: Process header
+    // Find size of header
+    int start = ftell(f);
+    while (fgetc(f) != '`');
+    int end = ftell(f);
+    int header_size = end-start;
+    fseek(f, start, SEEK_SET);
+
+    // Create header array
+    char header[header_size + 1];
+    header[header_size] = 0;
+    fread(header, sizeof(char), header_size, f);
+
+    // Process header array
+    char* header_element;
+    
+    char header_title[32];      // NOT CURRENTLY USED
+    int header_bpm;
+    char header_composer[32];   // NOT CURRENTLY USED
+    char header_vocals[32];     // NOT CURRENTLY USED
+    char header_original[32];   // NOT CURRENTLY USED
+    char header_mapper[32];     // NOT CURRENTLY USED
+    int header_offset;
+
+    if (header_element = strstr(header, "title:")) {
+        sscanf(header_element, "title:%s\n", header_title);
     }
 
+    if (header_element = strstr(header, "bpm:")) {
+        sscanf(header_element, "bpm: %d\n", &header_bpm);
+        conductor->SetBpm(header_bpm);
+    }
+
+    if (header_element = strstr(header, "composer:")) {
+        sscanf(header_element, "composer:%s\n", header_composer);
+    }
+
+    if (header_element = strstr(header, "vocals:")) {
+        sscanf(header_element, "vocals:%s\n", header_vocals);
+    }
+
+    if (header_element = strstr(header, "original:")) {
+        sscanf(header_element, "original:%s\n", header_original);
+    }
+
+    if (header_element = strstr(header, "mapper:")) {
+        sscanf(header_element, "mapper:%s\n", header_mapper);
+    }
+
+    if (header_element = strstr(header, "offset:")) {
+        sscanf(header_element, "offset: %d\n", &header_offset);
+        conductor->SetOffset(header_offset);
+    }
+
+    // Header over
+    /////////////////
 
     // Find size of data
-    int start = ftell(f);
+    start = ftell(f);
     fseek(f, 0, SEEK_END);
-    int end = ftell(f);
-    int size = end-start;
+    end = ftell(f);
+    int data_size = end-start;
     fseek(f, start, SEEK_SET);
 
     // Create data array
-    char data[size + 1];
-    data[size] = 0;
-    int result = fread(data, sizeof(char), size, f);
+    char data[data_size + 1];
+    data[data_size] = 0;
+    fread(data, sizeof(char), data_size, f);
 
     // Done with file
     fclose(f);
@@ -94,21 +137,21 @@ BeatmapWithVisualizer::BeatmapWithVisualizer(StreamConductor conductor, char* pa
     }
 
     for (size_t i = 0; i < notes.size(); i++) {
-        printf("Note at %f\n", notes[i].seconds);
+        // printf("Note at %f\n", notes[i].seconds);
     }
 }
 
 
 void BeatmapWithVisualizer::Update() {
     float er = GetErrorRange();
-    if (conductor.GetSongTimePosition() > lastbeat + er) {
+    if (conductor->GetSongTimePosition() > lastbeat + er) {
         lastbeat += er;
     }
 }
 
 void BeatmapWithVisualizer::Draw() {
     float TIME_RANGE = 2;
-    float current_time = conductor.GetSongTimePosition();
+    float current_time = conductor->GetSongTimePosition();
 
     std::vector<Beatmap_Note> upcoming_notes;
     for (Beatmap_Note note : notes) {
@@ -134,12 +177,12 @@ void BeatmapWithVisualizer::Draw() {
 
 float BeatmapWithVisualizer::GetErrorRange() {
     // Accuracy for player is within +/- an eighth note
-    return conductor.GetChrotchet() / 2;
+    return conductor->GetChrotchet() / 2;
 }
 
 int BeatmapWithVisualizer::CheckInRange() {
 
-    float current_time = conductor.GetSongTimePosition();
+    float current_time = conductor->GetSongTimePosition();
     float e = GetErrorRange();
     Beatmap_Note next_note;
     bool found_note = false;
@@ -157,7 +200,7 @@ int BeatmapWithVisualizer::CheckInRange() {
         return HIT_BAD;
     }
 
-    printf("current %f next %f\n", current_time, next_note.seconds );
+    // printf("current %f next %f\n", current_time, next_note.seconds );
 
     // Check if in ranges
 

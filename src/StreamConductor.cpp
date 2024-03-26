@@ -1,11 +1,21 @@
 #include "StreamConductor.hpp"
+#include <stdio.h>
 
 StreamConductor::StreamConductor(char* filename, float bpm){
     stream = LoadMusicStream(filename);
     // SetMusicVolume(stream, 0);
+    if (bpm != -1)
+        SetBpm(bpm);
+    offset = 0;
+}
+
+void StreamConductor::SetBpm(float bpm) {
     this->bpm = bpm;
     crotchet = 60 / bpm;
-    offset = 0;
+}
+
+void StreamConductor::SetOffset(float offset) {
+    this->offset = offset;
 }
 
 StreamConductor::StreamConductor(){ }

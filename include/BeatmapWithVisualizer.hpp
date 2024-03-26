@@ -35,12 +35,12 @@ private:
     // TODO: Probably change to events
     std::vector<Beatmap_Note> notes;
 
-    StreamConductor conductor;
+    StreamConductor* conductor;
     float lastbeat;
 
 public:
     BeatmapWithVisualizer();
-    BeatmapWithVisualizer(StreamConductor conductor, char* path, float offset=0);
+    BeatmapWithVisualizer(StreamConductor* conductor, char* path, float offset=0);
     ~BeatmapWithVisualizer();
     void Update();
     void Draw();

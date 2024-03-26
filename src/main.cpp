@@ -22,22 +22,15 @@ BeatmapWithVisualizer beatmap;
 void InitAudio(){
     InitAudioDevice();
 }
-
+#include <stdlib.h>
 void initialize_demo(){
     // Music
-    // char* path = "music/i wanna know.mp3";
-    // char* path = "music/146bpm.wav";
     char* path = "music/karateman.wav";
-    // float bpm = 146;
-    // float bpm = 100;
-    float bpm = 120;
-    float ratio = 1;
-    conductor = StreamConductor(path, bpm * ratio);
-    SetMusicPitch(conductor.GetStream(), ratio);
+    conductor = StreamConductor(path);
+    beatmap = BeatmapWithVisualizer(&conductor, "beatmaps/karate.bm");
 
-    metronome = Metronome(conductor);
-    crosshair = CrosshairMetronome(conductor);
-    beatmap = BeatmapWithVisualizer(conductor, "beatmaps/karate.bm");
+    metronome = Metronome(&conductor);
+    crosshair = CrosshairMetronome(&conductor);
     
 }
 

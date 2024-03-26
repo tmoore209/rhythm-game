@@ -9,7 +9,7 @@
 class CrosshairMetronome
 {
 private:
-    StreamConductor conductor;
+    StreamConductor* conductor;
     float lastbeat;
     Sound se_bad;
     Sound se_good;
@@ -18,7 +18,7 @@ private:
 
 public:
     CrosshairMetronome();
-    CrosshairMetronome(StreamConductor c);
+    CrosshairMetronome(StreamConductor* c);
     ~CrosshairMetronome();
     void Update();
     void Draw();

@@ -7,7 +7,7 @@ CrosshairMetronome::CrosshairMetronome() {
 CrosshairMetronome::~CrosshairMetronome() {
 }
 
-CrosshairMetronome::CrosshairMetronome(StreamConductor c) {
+CrosshairMetronome::CrosshairMetronome(StreamConductor* c) {
     lastbeat = 0;
     conductor = c;
     se_bad = LoadSound("sfx/game_button.mp3");
@@ -22,7 +22,7 @@ CrosshairMetronome::CrosshairMetronome(StreamConductor c) {
 // Check for timeout and play missed SE
 void CrosshairMetronome::Update() {
     float er = GetErrorRange();
-    if (conductor.GetSongTimePosition() > lastbeat + er) {
+    if (conductor->GetSongTimePosition() > lastbeat + er) {
         lastbeat += er;
     }
 }
@@ -40,7 +40,7 @@ void CrosshairMetronome::Draw() {
         WIDTH/2 - rect.width/2, // Center
         0                       // left
     };
-    float beatpos = conductor.GetSongBeatPosition();
+    float beatpos = conductor->GetSongBeatPosition();
     int rounddown = (int) beatpos;      // previous/current beat
     int roundup = (int) beatpos + 1;    // next beat
     float fractional = beatpos - rounddown; // Percentage along
@@ -58,7 +58,7 @@ void CrosshairMetronome::Draw() {
 
 float CrosshairMetronome::GetErrorRange() {
     // Accuracy for player is within +/- an eighth note
-    return conductor.GetChrotchet() / 2;
+    return conductor->GetChrotchet() / 2;
 }
 
 
@@ -66,7 +66,7 @@ float CrosshairMetronome::GetErrorRange() {
 // TODO: Change this to support perfect/good/Bad
 int CrosshairMetronome::CheckInRange() {
     // Some nonsense to do modulo on float
-    float beatpos = conductor.GetSongBeatPosition();
+    float beatpos = conductor->GetSongBeatPosition();
     float fractional = beatpos - (int)beatpos;
     float pos = ((int)beatpos % 4) + fractional;
 

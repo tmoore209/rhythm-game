@@ -5,13 +5,13 @@
 class Metronome
 {
 private:
-    StreamConductor conductor;
+    StreamConductor* conductor;
     float lastbeat;
     Sound sound;
 
 public:
     Metronome();
-    Metronome(StreamConductor conductor);
+    Metronome(StreamConductor* conductor);
     ~Metronome();
 
     void Update();

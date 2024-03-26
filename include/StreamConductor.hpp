@@ -15,7 +15,7 @@ private:
 
 public:
     StreamConductor();
-    StreamConductor(char* filename, float bpm);
+    StreamConductor(char* filename, float bpm=-1);
     ~StreamConductor();
     float GetBpm();
     float GetChrotchet();
@@ -33,4 +33,6 @@ public:
     void SetVolume(float x);
     int GetInteger();
     float GetFractional();
+    void SetBpm(float bpm);
+    void SetOffset(float offset);
 };

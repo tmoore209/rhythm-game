@@ -3,7 +3,7 @@
 Metronome::Metronome() { }
 Metronome::~Metronome() { }
 
-Metronome::Metronome(StreamConductor c) {
+Metronome::Metronome(StreamConductor* c) {
     lastbeat = 0;
     conductor = c;
 
@@ -11,8 +11,8 @@ Metronome::Metronome(StreamConductor c) {
 }
 
 void Metronome::Update(){
-    float crotchet = conductor.GetChrotchet();
-    if (conductor.GetSongTimePosition() > lastbeat + crotchet) {
+    float crotchet = conductor->GetChrotchet();
+    if (conductor->GetSongTimePosition() > lastbeat + crotchet) {
         PlaySound(sound);
         lastbeat += crotchet;
     }
