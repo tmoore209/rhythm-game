@@ -65,7 +65,10 @@ BeatmapWithVisualizer::BeatmapWithVisualizer(StreamConductor* conductor, char* p
 
     if (header_element = strstr(header, "offset:")) {
         sscanf(header_element, "offset: %d\n", &header_offset);
-        // conductor->SetOffset(header_offset);
+    }
+
+    if (header_element = strstr(header, "metronome_offset:")) {
+        sscanf(header_element, "metronome_offset: %f\n", &metronome_offset);
     }
 
     // Header over
@@ -141,6 +144,9 @@ BeatmapWithVisualizer::BeatmapWithVisualizer(StreamConductor* conductor, char* p
     }
 }
 
+float BeatmapWithVisualizer::GetMetronomeOffset(){
+    return metronome_offset;
+}
 
 void BeatmapWithVisualizer::Update() {
     float er = GetErrorRange();

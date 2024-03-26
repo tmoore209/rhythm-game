@@ -4,6 +4,7 @@
 #include "Metronome.hpp"
 #include "CrosshairMetronome.hpp"
 #include "BeatmapWithVisualizer.hpp"
+#include "Batter.hpp"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -17,6 +18,7 @@ Rectangle target_rect;
 Metronome metronome;
 CrosshairMetronome crosshair;
 BeatmapWithVisualizer beatmap;
+
 //
 
 void InitAudio(){
@@ -25,12 +27,12 @@ void InitAudio(){
 #include <stdlib.h>
 void initialize_demo(){
     // Music
-    char* path = "music/karateman.wav";
+    char* path = "music/airbatter.ogg";
     conductor = StreamConductor(path);
-    beatmap = BeatmapWithVisualizer(&conductor, "beatmaps/karate.bm");
+    beatmap = BeatmapWithVisualizer(&conductor, "beatmaps/airbatter.bm");
 
-    metronome = Metronome(&conductor);
-    crosshair = CrosshairMetronome(&conductor);
+    metronome = Metronome(&conductor, beatmap.GetMetronomeOffset());
+    crosshair = CrosshairMetronome(&conductor, beatmap.GetMetronomeOffset());
     
 }
 
@@ -45,6 +47,7 @@ int main() {
     initialize_demo();
     SetTargetFPS(60);
 
+    Batter batter;
 
     conductor.Start();
 
@@ -63,8 +66,10 @@ int main() {
         metronome.Update();
         beatmap.Update();
         crosshair.Update();
+        batter.Update();
 
         if (IsKeyPressed(KEY_SPACE)) {
+            batter.Swing();
             int result = beatmap.CheckInRange();
             if (result == HIT_PERFECT) {
                 crosshair.PlayPerfect();
@@ -93,6 +98,7 @@ int main() {
         DrawRectangleRec(target_rect, BLACK);
         crosshair.Draw();
         beatmap.Draw();
+        batter.Draw();
 
         EndDrawing();
     }

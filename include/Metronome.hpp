@@ -7,11 +7,12 @@ class Metronome
 private:
     StreamConductor* conductor;
     float lastbeat;
+    float offset;
     Sound sound;
 
 public:
     Metronome();
-    Metronome(StreamConductor* conductor);
+    Metronome(StreamConductor* conductor, float offset=0);
     ~Metronome();
 
     void Update();

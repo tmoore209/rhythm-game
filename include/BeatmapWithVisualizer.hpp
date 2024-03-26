@@ -30,8 +30,9 @@ private:
     char* header_mapper;
 
     // Important type stuff
-    float header_bpm;
-    float header_offset;
+    // float header_bpm;
+    // float header_offset;
+    float metronome_offset;
     // TODO: Probably change to events
     std::vector<Beatmap_Note> notes;
 
@@ -46,4 +47,5 @@ public:
     void Draw();
     float GetErrorRange();
     int CheckInRange();
+    float GetMetronomeOffset();
 };

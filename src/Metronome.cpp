@@ -3,8 +3,9 @@
 Metronome::Metronome() { }
 Metronome::~Metronome() { }
 
-Metronome::Metronome(StreamConductor* c) {
-    lastbeat = 0;
+Metronome::Metronome(StreamConductor* c, float offset) {
+    this->offset = offset;
+    lastbeat = offset;
     conductor = c;
 
     sound = LoadSound("sfx/metronome.wav");

@@ -7,8 +7,9 @@ CrosshairMetronome::CrosshairMetronome() {
 CrosshairMetronome::~CrosshairMetronome() {
 }
 
-CrosshairMetronome::CrosshairMetronome(StreamConductor* c) {
-    lastbeat = 0;
+CrosshairMetronome::CrosshairMetronome(StreamConductor* c, float offset) {
+    lastbeat = offset;
+    this->offset = offset;
     conductor = c;
     se_bad = LoadSound("sfx/game_button.mp3");
     se_good = LoadSound("sfx/good.mp3");
@@ -40,7 +41,7 @@ void CrosshairMetronome::Draw() {
         WIDTH/2 - rect.width/2, // Center
         0                       // left
     };
-    float beatpos = conductor->GetSongBeatPosition();
+    float beatpos = conductor->GetSongBeatPosition() + offset;
     int rounddown = (int) beatpos;      // previous/current beat
     int roundup = (int) beatpos + 1;    // next beat
     float fractional = beatpos - rounddown; // Percentage along
