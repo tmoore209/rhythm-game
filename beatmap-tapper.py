@@ -8,6 +8,7 @@
 
 import curses
 import datetime
+from sys import argv
 
 header = """
 ```
@@ -21,7 +22,11 @@ offset:
 ```
 """.strip()
 
-path = input("input filename to save to (/ seperator):\n").strip()
+if len(argv) > 1:
+    path = argv[1].strip()
+else:
+    path = input("input filename to save to (/ seperator):\n").strip()
+
 
 def main(screen):
     times = []
