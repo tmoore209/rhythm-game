@@ -6,7 +6,7 @@ StreamConductor::StreamConductor(char* filename, float bpm){
     // SetMusicVolume(stream, 0);
     if (bpm != -1)
         SetBpm(bpm);
-    offset = 0;
+    // offset = 0;
 }
 
 void StreamConductor::SetBpm(float bpm) {
@@ -14,9 +14,9 @@ void StreamConductor::SetBpm(float bpm) {
     crotchet = 60 / bpm;
 }
 
-void StreamConductor::SetOffset(float offset) {
-    this->offset = offset;
-}
+// void StreamConductor::SetOffset(float offset) {
+//     this->offset = offset;
+// }
 
 StreamConductor::StreamConductor(){ }
 StreamConductor::~StreamConductor(){ }
@@ -29,12 +29,13 @@ float StreamConductor::GetChrotchet() {
     return crotchet;
 }
 
-float StreamConductor::GetOffset() {
-    return offset;
-}
+// float StreamConductor::GetOffset() {
+//     return offset;
+// }
 
 float StreamConductor::GetSongTimePosition() {
-    return GetMusicTimePlayed(stream) - offset;
+    // return GetMusicTimePlayed(stream) - offset;
+    return GetMusicTimePlayed(stream);
 }
 
 float StreamConductor::GetSongBeatPosition() {

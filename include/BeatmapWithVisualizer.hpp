@@ -40,7 +40,7 @@ private:
 
 public:
     BeatmapWithVisualizer();
-    BeatmapWithVisualizer(StreamConductor* conductor, char* path, float offset=0);
+    BeatmapWithVisualizer(StreamConductor* conductor, char* path);
     ~BeatmapWithVisualizer();
     void Update();
     void Draw();

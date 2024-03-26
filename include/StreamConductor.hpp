@@ -8,7 +8,7 @@ private:
     float volume = 1.0;
     float bpm;
     float crotchet;  // Length of quarter note
-    float offset;    // mp3 only?
+    // float offset;    // mp3 only?
 
     // float met_lastbeat;
     // Sound metronome;
@@ -19,7 +19,7 @@ public:
     ~StreamConductor();
     float GetBpm();
     float GetChrotchet();
-    float GetOffset();
+    // float GetOffset();
     float GetSongTimePosition();
     float GetSongBeatPosition();
     Music GetStream();
@@ -34,5 +34,5 @@ public:
     int GetInteger();
     float GetFractional();
     void SetBpm(float bpm);
-    void SetOffset(float offset);
+    // void SetOffset(float offset);
 };

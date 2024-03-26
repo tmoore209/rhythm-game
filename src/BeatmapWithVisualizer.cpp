@@ -7,7 +7,7 @@ BeatmapWithVisualizer::BeatmapWithVisualizer() { }
 BeatmapWithVisualizer::~BeatmapWithVisualizer() { }
 
 
-BeatmapWithVisualizer::BeatmapWithVisualizer(StreamConductor* conductor, char* path, float offset) {
+BeatmapWithVisualizer::BeatmapWithVisualizer(StreamConductor* conductor, char* path) {
     this->conductor = conductor;
 
     FILE* f = fopen(path, "r");
@@ -36,7 +36,7 @@ BeatmapWithVisualizer::BeatmapWithVisualizer(StreamConductor* conductor, char* p
     char header_vocals[32];     // NOT CURRENTLY USED
     char header_original[32];   // NOT CURRENTLY USED
     char header_mapper[32];     // NOT CURRENTLY USED
-    int header_offset;
+    int header_offset = 0;
 
     if (header_element = strstr(header, "title:")) {
         sscanf(header_element, "title:%s\n", header_title);
@@ -65,7 +65,7 @@ BeatmapWithVisualizer::BeatmapWithVisualizer(StreamConductor* conductor, char* p
 
     if (header_element = strstr(header, "offset:")) {
         sscanf(header_element, "offset: %d\n", &header_offset);
-        conductor->SetOffset(header_offset);
+        // conductor->SetOffset(header_offset);
     }
 
     // Header over
@@ -104,7 +104,7 @@ BeatmapWithVisualizer::BeatmapWithVisualizer(StreamConductor* conductor, char* p
                 float time;
                 int note_type;
                 sscanf(line, "%d %f %d", &command, &time, &note_type);
-                notes.push_back(Beatmap_Note {NOTE, (time - offset)/1000000, note_type});
+                notes.push_back(Beatmap_Note {NOTE, (time-header_offset)/1000000, note_type});
                 break;
             }
             
