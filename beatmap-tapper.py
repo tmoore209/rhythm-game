@@ -30,7 +30,7 @@ else:
 
 def main(screen):
     times = []
-    
+
     screen.clear()
     screen.addstr("press any key when ready. Press enter to exit input mode.")
     screen.getkey()
@@ -51,11 +51,11 @@ def main(screen):
 
         for t in times:
             delta:datetime.timedelta = t - start_time
-            
+
             ss = delta.seconds
             us = delta.microseconds + ss * 1_000_000
             EVENT_NUMBER = 1
-            string = f"{us} {EVENT_NUMBER}\n"
+            string = f"0 {us} {EVENT_NUMBER}\n"
             f.write(string)
 
 curses.wrapper(main)
