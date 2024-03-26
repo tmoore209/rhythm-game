@@ -6,13 +6,20 @@ while True:
     if choice in "QE":
         break
 
+elem_index = 1
+elem_index = input("Quantize which element? [1]")
+elem_index = int(elem_index) if elem_index else 1
+
 print("Times:")
 lines = []
 while inp := input().strip():
     lines += inp.split("\n")
 
+# Skip any lines not starting with a number
 lines = [l if l[0].isnumeric() else " " for l in lines]
-lines = [l.split()[0] for l in lines]
+# Get the elements to quantize
+lines = [l.split()[elem_index] for l in lines]
+# Convert to int
 times = [int(l) for l in lines]
 
 if choice == "Q":
