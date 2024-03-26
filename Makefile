@@ -6,5 +6,5 @@ SOURCES=$(wildcard src/*.cpp)
 WARNINGS=-Wall -Wextra
 IGNORES=-Wno-parentheses -Wno-narrowing -Wno-write-strings
 
-rhythm: src/*.cpp
+rhythm: src/*.cpp include/*.hpp
 	g++ $(WARNINGS) $(IGNORES) $(CPPFLAGS) -o rhythm $(SOURCES) -I ./include $(LIBS)
