@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "StreamConductor.hpp"
+#include "BeatmapNoteType.hpp"
 
 #define HIT_PERFECT 0
 #define HIT_GOOD 1
@@ -8,15 +9,19 @@
 
 enum BEATMAP_EVENT_TYPE {
     NOTE,
+    CUE_A,
+    CUE_B,
+    CUE_C,
+    CUE_D,
     NEW_BPM,
     NEW_TIME_SIG
 };
 
 // TODO: Probably make a subclass of events (also make an event struct)
 struct Beatmap_Note {
-    int type;           // always 0
-    float seconds;      // time to trigger this note
-    int note_type;      // for now, always 1 (would be 2/3 for a hold/other button)
+    float seconds; // time to trigger this note
+    Beatmap_Note_Type type;
+    bool triggered = false;
 };
 
 class BeatmapWithVisualizer
@@ -43,7 +48,7 @@ public:
     BeatmapWithVisualizer();
     BeatmapWithVisualizer(StreamConductor* conductor, char* path);
     ~BeatmapWithVisualizer();
-    void Update();
+    Beatmap_Note_Type Update(); // Return any cues (i.e. launch ball)
     void Draw();
     float GetErrorRange();
     int CheckInRange();

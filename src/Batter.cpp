@@ -21,22 +21,26 @@ void Batter::Update() {
 }
 
 void Batter::Draw() {
-    
+    float scale = 2;
+
     Rectangle source = size;
     source.x = size.width * frame;
-    int x = GetScreenWidth() / 2;
-    int y = GetScreenHeight() / 2;
-    Vector2 position = {x, y};
-    DrawTextureRec(texture, source, position, WHITE);
+    float x = GetScreenWidth() / 2;
+    float y = (GetScreenHeight() / 2) - (scale * size.height / 2);
 
-    // Probably use this one for the baseball
-    // void DrawTexturePro(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, Color tint); // Draw a part of a texture defined by a rectangle with 'pro' parameters
+    DrawTexturePro(texture,
+        source,
+        {x, y, size.width * scale, size.height * scale},
+        {0, 0},     // Origin
+        0,          // Rotation
+        WHITE
+    );
 
     if (!playing)
         return;
 
     wait++;
-    
+
     if(wait == frames_to_wait) {
         frame++;
         wait = 0;

@@ -5,6 +5,7 @@
 #include "CrosshairMetronome.hpp"
 #include "BeatmapWithVisualizer.hpp"
 #include "Batter.hpp"
+#include "Baseball.hpp"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -29,7 +30,7 @@ void initialize_demo(){
     // Music
     char* path = "music/airbatter.ogg";
     conductor = StreamConductor(path);
-    beatmap = BeatmapWithVisualizer(&conductor, "beatmaps/airbatter.bm");
+    beatmap = BeatmapWithVisualizer(&conductor, "beatmaps/airbatter-shortlong-quantized.bm");
 
     metronome = Metronome(&conductor, beatmap.GetMetronomeOffset());
     crosshair = CrosshairMetronome(&conductor, beatmap.GetMetronomeOffset());
@@ -48,6 +49,7 @@ int main() {
     SetTargetFPS(60);
 
     Batter batter;
+    Baseball baseball;
 
     conductor.Start();
 
@@ -64,23 +66,28 @@ int main() {
 
         // Update Objects
         metronome.Update();
-        beatmap.Update();
+        Beatmap_Note_Type cue = beatmap.Update();
         crosshair.Update();
         batter.Update();
+        baseball.Update(cue);
 
         if (IsKeyPressed(KEY_SPACE)) {
             batter.Swing();
+
             int result = beatmap.CheckInRange();
             if (result == HIT_PERFECT) {
                 crosshair.PlayPerfect();
+                baseball.PlayPerfect();
             }
 
             else if (result == HIT_GOOD) {
                 crosshair.PlayGood();
+                baseball.PlayGood();
             }
 
             else if (result == HIT_BAD){
                 crosshair.PlayBad();
+                baseball.PlayBad();
             }
         }
     
@@ -91,6 +98,12 @@ int main() {
         BeginDrawing(); 
         // DrawFPS(0,0);
 
+        char mousepos[16] = {};
+        int mx = GetMouseX();
+        int my = GetMouseY();
+        sprintf(mousepos, "%d %d", mx, my);
+        DrawText(mousepos, 0, 100, 16, WHITE);
+
         // Draw background
         ClearBackground(BLUE);
 
@@ -99,6 +112,7 @@ int main() {
         crosshair.Draw();
         beatmap.Draw();
         batter.Draw();
+        baseball.Draw();
 
         EndDrawing();
     }

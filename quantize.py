@@ -1,41 +1,75 @@
 #! /usr/bin/env python3
-bpm = 1/float(input("bpm?"))
+import argparse
 
-while True:
-    choice = input("quantize to [Q]uarter/[E]ight?").upper()
-    if choice in "QE":
-        break
+parser = argparse.ArgumentParser(prog="quantize.py", description="Quantize beatmap files")
+parser.add_argument('in_filename')
+parser.add_argument('out_filename')
 
-elem_index = 1
-elem_index = input("Quantize which element? [1]")
-elem_index = int(elem_index) if elem_index else 1
+parser.add_argument('--bpm', action='store', type=float, required=True)
+parser.add_argument('--division', action='store', default='q', choices=['q', 'e', 's'], type=str, required=True)
+parser.add_argument('--index', action='store', type=int, required=True)
+parser.add_argument('--start_on', action='store', type=int)
+parser.add_argument('--baseball', action='store_true')
 
-print("Times:")
-lines = []
-while inp := input().strip():
-    lines += inp.split("\n")
+args = parser.parse_args()
+bpm = 1/args.bpm
 
-# Skip any lines not starting with a number
-lines = [l if l[0].isnumeric() else " " for l in lines]
-# Get the elements to quantize
-lines = [l.split()[elem_index] for l in lines]
-# Convert to int
-times = [int(l) for l in lines]
-
-if choice == "Q":
+if args.division == "q":
     time_of_minimum = int(bpm * 60 * 1_000_000 * 1)
-elif choice == "E":
+elif args.division == "e":
     time_of_minimum = int(bpm * 60 * 1_000_000 * 2)
-elif choice == "S":
+elif args.division == "s":
     time_of_minimum = int(bpm * 60 * 1_000_000 * 4)
 
-print(f"{time_of_minimum=}")
+header = []
+data = []
+with open(args.in_filename) as f:
+    header_start = False
 
-# Divide, convert to int, and the multiply back to take a floor of some sort
-times =[int(t/time_of_minimum)*time_of_minimum for t in times]
+    # Read header
+    while (line := f.readline().strip()):
+        if not header_start:
+             if line.startswith('`'):
+                header_start = True
+        
+        else:
+            if line.startswith('`'):
+                break
+            else:
+                header.append(line + "\n")
 
+    # Read data
+    while (line := f.readline().strip()):
+        data.append(line)
 
-print("Output:")
-for time in times:
-    time = str(time)
-    print(time, '1')
+delta = 0
+if args.start_on:
+    t0 = int(data[0].split()[args.index])
+    t0 = time_of_minimum * int(t0/time_of_minimum)
+    delta = args.start_on - t0
+
+# Do processing and output
+with open(args.out_filename, 'w') as f:
+    f.write('`\n')
+    f.writelines(header)
+    f.write('`\n')
+
+    for line in data:
+        components = line.split()
+        t = int(components[args.index])
+        components[args.index] = time_of_minimum * int(t/time_of_minimum)
+        components[args.index] += delta
+
+        if args.baseball:
+            dt = time_of_minimum if components[-1] == '0' else time_of_minimum*2
+            launch = [
+                str(1),
+                str(components[1] - dt),
+                str(components[-1]), "\n"
+            ]
+            f.write(" ".join(launch))
+
+        for c in components:
+            f.write(str(c))
+            f.write(" ")
+        f.write("\n")

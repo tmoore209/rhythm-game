@@ -5,7 +5,6 @@ class Batter
 {
 private:
     Texture texture;
-    Image image;
     Rectangle size = {0, 0, 109, 129};     // Width and height of a single drawing
     int frame = 0;          // Current drawing number
     int frame_count = 5;    // Number of drawings

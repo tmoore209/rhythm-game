@@ -19,6 +19,7 @@ vocals:
 original:
 mapper:
 offset:
+metronome_offset:
 `
 """.strip()
 
@@ -27,6 +28,7 @@ if len(argv) > 1:
 else:
     path = input("input filename to save to (/ seperator):\n").strip()
 
+keys = {}
 
 def main(screen):
     times = []
@@ -43,19 +45,22 @@ def main(screen):
         key = screen.getkey()
         if key == "\n":
             break
-        times.append(datetime.datetime.now())
+        if key not in keys:
+            keys[key] = len(keys)
+        event = keys[key]
+
+        times.append((datetime.datetime.now(), event))
 
     with open(path, 'w') as f:
 
         f.write(header + "\n")
 
-        for t in times:
+        for (t, event_number) in times:
             delta:datetime.timedelta = t - start_time
 
             ss = delta.seconds
             us = delta.microseconds + ss * 1_000_000
-            EVENT_NUMBER = 1
-            string = f"0 {us} {EVENT_NUMBER}\n"
+            string = f"0 {us} {event_number}\n"
             f.write(string)
 
 curses.wrapper(main)

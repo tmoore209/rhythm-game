@@ -105,9 +105,17 @@ BeatmapWithVisualizer::BeatmapWithVisualizer(StreamConductor* conductor, char* p
             // MICROSECOND NOTE_TYPE    (consumes 3)
             case NOTE: {
                 float time;
-                int note_type;
-                sscanf(line, "%d %f %d", &command, &time, &note_type);
-                notes.push_back(Beatmap_Note {NOTE, (time-header_offset)/1000000, note_type});
+                Beatmap_Note_Type type;
+                sscanf(line, "%d %f %d", &type.main, &time, &type.sub);
+                notes.push_back(Beatmap_Note {(time-header_offset)/1000000, type});
+                break;
+            }
+
+            case CUE_A: {
+                float time;
+                Beatmap_Note_Type type;
+                sscanf(line, "%d %f %d", &type.main, &time, &type.sub);
+                notes.push_back(Beatmap_Note {(time-header_offset)/1000000, type});
                 break;
             }
             
@@ -148,11 +156,24 @@ float BeatmapWithVisualizer::GetMetronomeOffset(){
     return metronome_offset;
 }
 
-void BeatmapWithVisualizer::Update() {
+Beatmap_Note_Type BeatmapWithVisualizer::Update() {
     float er = GetErrorRange();
-    if (conductor->GetSongTimePosition() > lastbeat + er) {
+    float current_time = conductor->GetSongTimePosition();
+    Beatmap_Note_Type cue = {-1, -1};
+
+    if (current_time > lastbeat + er) {
         lastbeat += er;
     }
+
+
+    for (Beatmap_Note& note : notes) {
+        if (note.seconds < current_time && note.type.main != NOTE && !note.triggered) {
+            note.triggered = true;
+            cue = note.type;
+            break;
+        }
+    }
+    return cue;
 }
 
 void BeatmapWithVisualizer::Draw() {
@@ -174,9 +195,19 @@ void BeatmapWithVisualizer::Draw() {
     DrawRectangle(0,0,40,80, WHITE);
 
     for (auto note : upcoming_notes) {
+        Color c = BLACK;
+        if (note.type.main == CUE_A) {
+            if (note.type.sub == 0) {
+                c = PURPLE;
+            }
+            else {
+                c = YELLOW;
+            }
+        }
+
         DrawRectangle(
             GetScreenWidth() * (note.seconds - current_time) / TIME_RANGE,
-            0, 40, 80, BLACK
+            0, 40, 80, c
         );
     }
 }
@@ -195,6 +226,9 @@ int BeatmapWithVisualizer::CheckInRange() {
 
     // Find next note (if any)
     for (auto note : notes) {
+        if (note.type.main != NOTE)
+            continue;
+            
         if (note.seconds > current_time - e) {
             next_note = note;
             found_note = true;
